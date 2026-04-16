@@ -58,13 +58,17 @@ int main()
 	}
 
 	sf::Clock clock;
-
-	sf::CircleShape circle(50.f);
-	circle.setFillColor(sf::Color(100, 250, 50));
+	
+	float circleRadius = 50.f;
+	int circleSegments = 100;
+	float circleColor[3] = { (float)204 / 255, (float)204 / 255, (float)204 / 255 };
+	sf::CircleShape circle(circleRadius, circleSegments);
+	circle.setFillColor(sf::Color(circleColor[0] * 255,circleColor[1] * 255,circleColor[2] * 255 ));
 	circle.setOutlineThickness(10.f);
 	circle.setOutlineColor(sf::Color(250, 150, 100));
 	circle.setPosition(sf::Vector2f(windowWidth - 100, windowHeight / 2));
-	circle.setOrigin({ 50.f, 50.f });
+	circle.setOrigin({circleRadius, circleRadius});
+	bool circleExist = true;
 
 	sf::CircleShape circle2(30.f);
 	circle2.setFillColor(sf::Color(150, 150, 150));
@@ -75,7 +79,6 @@ int main()
 
 	sf::Vector2f speed(-250.f, -180.f);
 	sf::Vector2f speed2(250.f, 180.f);
-
 
 
 	while (window.isOpen())
@@ -165,12 +168,22 @@ int main()
 		}
 
 		ImGui::Begin("Debug");
-		
+		ImGui::Checkbox("Circle", &circleExist);
+		ImGui::SliderFloat("Circle Radius", &circleRadius, 50.f, 200.f);
+		ImGui::SliderInt("Circle Segments", &circleSegments, 3, 150);
+		ImGui::ColorEdit3("Circle Color", circleColor);
 		ImGui::End();
 
+		circle.setRadius(circleRadius);
+		circle.setPointCount(circleSegments);
+		circle.setFillColor(sf::Color(circleColor[0] * 255, circleColor[1] * 255, circleColor[2] * 255));
+		circle.setOrigin({circleRadius, circleRadius});
 
 		window.clear(sf::Color::Black);
-		window.draw(circle);
+		if (circleExist)
+		{
+			window.draw(circle);
+		}
 		window.draw(circle2);
 
 		ImGui::SFML::Render(window);
